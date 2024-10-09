@@ -117,14 +117,7 @@ export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 
-# Created by `pipx` on 2023-07-10 12:32:19
-export PATH="$PATH:/Users/efoissotte/.local/bin"
-eval "$(register-python-argcomplete pipx)"
-
-# terraform auto-complete
-# terraform -install-autocomplete
-
-autoload -U +X bashcompinit && bashcompinit
+autoload -U compinit && compinit
 complete -o nospace -C /usr/local/bin/terraform terraform
 
 function csv_to_parquet() {
@@ -136,3 +129,15 @@ function parquet_to_csv() {
     file_path="$1"
     duckdb -c "COPY (SELECT * FROM '$file_path') TO '${file_path%.*}.csv' (HEADER, FORMAT 'csv');"
 }
+
+# Created by `pipx` on 2024-10-08 14:36:26
+export PATH="$PATH:/Users/emilien.foissotte-sc@airliquide.com/.local/bin"
+eval "$(register-python-argcomplete pipx)"
+
+# if a local alias file exists under folder .local_alias, source it
+if [[ -f ~/.local_alias/.zshrc ]]; then
+    source ~/.local_alias/.zshrc
+fi
+
+# bash completions for azure cli - WARNING the version might change
+source /opt/homebrew/Cellar/azure-cli/2.65.0/etc/bash_completion.d/az
