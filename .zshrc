@@ -140,4 +140,4 @@ if [[ -f ~/.local_alias/.zshrc ]]; then
 fi
 
 # bash completions for azure cli - WARNING the version might change
-source /opt/homebrew/Cellar/azure-cli/2.65.0/etc/bash_completion.d/az
+source /opt/homebrew/etc/bash_completion.d/az
