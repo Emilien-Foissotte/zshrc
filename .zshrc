@@ -120,16 +120,14 @@ eval "$(pyenv init -)"
 autoload -U compinit && compinit
 complete -o nospace -C /usr/local/bin/terraform terraform
 
-function csv_to_parquet() {
-    file_path="$1"
-    duckdb -c "COPY (SELECT * FROM read_csv_auto('$file_path')) TO '${file_path%.*}.parquet' (FORMAT PARQUET);"
-}
-
-function parquet_to_csv() {
-    file_path="$1"
-    duckdb -c "COPY (SELECT * FROM '$file_path') TO '${file_path%.*}.csv' (HEADER, FORMAT 'csv');"
-}
-
+# if a local folder named .sh_scripts exists, source it
+if [[ -d ~/.sh_scripts ]]; then
+    for script in ~/.sh_scripts/*.sh; do
+        if [[ -f $script ]]; then
+            source "$script"
+        fi
+    done
+fi
 # Created by `pipx` on 2024-10-08 14:36:26
 export PATH="$PATH:/Users/emilien.foissotte-sc@airliquide.com/.local/bin"
 eval "$(register-python-argcomplete pipx)"
@@ -143,25 +141,3 @@ fi
 source /opt/homebrew/etc/bash_completion.d/az
 
 export JAVA_HOME=/opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home
-
-function ftmd() {
-    # get the last downloaded csv file
-    file_path=$(ls -t ~/Downloads/*.csv | head -n 1)
-    # ask for confirmation (Y/n)
-    read "REPLY?Convert $file_path to markdown? (Y/n)"
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-      # convert
-      pandoc -f csv -t markdown "$file_path" -o "${file_path%.*}.md"
-      echo "CSV file converted to markdown"
-    else
-      echo "Conversion aborted"
-    fi
-    csv2md "$file_path" | pbcopy
-    # remove file if asked
-    read -p "REPLY?Remove $file_path? (Y/n)"
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-      rm "$file_path"
-      echo "CSV file removed"
-    fi
-    echo "Markdown content copied to clipboard in GitHub Flavored Markdown format"
-}
